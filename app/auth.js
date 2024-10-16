@@ -1,4 +1,5 @@
 import NextAuth from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
 import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 
@@ -8,7 +9,11 @@ export const {
    signIn,
    signOut
 } = NextAuth({
+   session: {
+     strategy: "jwt"
+   },
    providers: [
+      CredentialsProvider({}),
       GoogleProvider({
          clientId: process.env.GOOGLE_CLIENT_ID,
          clientSecret: process.env.GOOGLE_CLIENT_SECRET,
