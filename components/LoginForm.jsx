@@ -1,9 +1,37 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { doCredentialLogin } from "../app/actions";
 import SocialLogin from "../components/SocialLogin";
 
 const LoginForm = () => {
+  const router = useRouter();
+  const [error, setError] = useState("");
+
+  async function onSubmit(event) {
+    event.preventDefault();
+    try {
+      const formData = new FormData(event.currentTarget);
+      const response = await doCredentialLogin(formData);
+
+      if (!!response.error) {
+        console.error(response.error);
+        setError(response.error.message);
+      } else {
+        router.push("/home");
+      }
+    } catch (error) {
+      console.error(error);
+      setError("Check your credentials")
+    }
+  }
   return (
     <>
-      <form className='my-5 flex flex-col items-center border p-3 border-gray-200 rounded-md'>
+    <div className="text-xl text-red-500">{error}</div>
+      <form
+        onSubmit={onSubmit}
+        className='my-5 flex flex-col items-center border p-3 border-gray-200 rounded-md'>
         <div className='my-2'>
           <label htmlFor='email'>Email Address</label>
           <input
